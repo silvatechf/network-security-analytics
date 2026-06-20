@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  database_audit_local:
+    image: postgres:15-alpine
+    container_name: database_audit_local
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "54321:5432"
+    networks:
+      - secure_monitoring_net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_secops
+    ports:
+      - "3000:3000"
+    networks:
+      - secure_monitoring_net
+    depends_on:
+      - database_audit_local
+
+networks:
+  secure_monitoring_net:
+    driver: bridge
